@@ -35,12 +35,14 @@ namespace ams::dmnt::cheat {
                 QueryCheatProcessMemory     = 65104,
 
                 /* Interact with Cheats */
-                GetCheatCount = 65200,
-                GetCheats     = 65201,
-                GetCheatById  = 65202,
-                ToggleCheat   = 65203,
-                AddCheat      = 65204,
-                RemoveCheat   = 65205,
+                GetCheatCount           = 65200,
+                GetCheats               = 65201,
+                GetCheatById            = 65202,
+                ToggleCheat             = 65203,
+                AddCheat                = 65204,
+                RemoveCheat             = 65205,
+                ReadArgumentRegister    = 65206,
+                WriteArgumentRegister   = 65207,
 
                 /* Interact with Frozen Addresses */
                 GetFrozenAddressCount = 65300,
@@ -67,6 +69,8 @@ namespace ams::dmnt::cheat {
             Result ToggleCheat(u32 cheat_id);
             Result AddCheat(const CheatDefinition &cheat, sf::Out<u32> out_cheat_id, bool enabled);
             Result RemoveCheat(u32 cheat_id);
+            Result ReadArgumentRegister(sf::Out<u64> out_value, u8 argument_register);
+            Result WriteArgumentRegister(u64 value, u8 argument_register);
 
             Result GetFrozenAddressCount(sf::Out<u64> out_count);
             Result GetFrozenAddresses(const sf::OutArray<FrozenAddressEntry> &addresses, sf::Out<u64> out_count, u64 offset);
@@ -93,6 +97,8 @@ namespace ams::dmnt::cheat {
                 MAKE_SERVICE_COMMAND_META(ToggleCheat),
                 MAKE_SERVICE_COMMAND_META(AddCheat),
                 MAKE_SERVICE_COMMAND_META(RemoveCheat),
+                MAKE_SERVICE_COMMAND_META(ReadArgumentRegister),
+                MAKE_SERVICE_COMMAND_META(WriteArgumentRegister),
 
                 MAKE_SERVICE_COMMAND_META(GetFrozenAddressCount),
                 MAKE_SERVICE_COMMAND_META(GetFrozenAddresses),

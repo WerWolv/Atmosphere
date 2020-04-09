@@ -95,6 +95,14 @@ namespace ams::dmnt::cheat {
         return dmnt::cheat::impl::RemoveCheat(cheat_id);
     }
 
+    Result CheatService::ReadArgumentRegister(sf::Out<u64> out_value, u8 argument_register) {
+        return dmnt::cheat::impl::ReadArgumentRegister(out_value.GetPointer(), argument_register);
+    }
+
+    Result CheatService::WriteArgumentRegister(u64 value, u8 argument_register) {
+        return dmnt::cheat::impl::WriteArgumentRegister(value, argument_register);
+    }
+
     /* ========================================================================================= */
     /* ===================================  Address Commands  ================================== */
     /* ========================================================================================= */

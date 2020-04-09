@@ -35,6 +35,7 @@ namespace ams::dmnt {
             R_DEFINE_ERROR_RESULT(CheatOutOfResource,   6504);
             R_DEFINE_ERROR_RESULT(CheatInvalid,         6505);
             R_DEFINE_ERROR_RESULT(CheatCannotDisable,   6506);
+            R_DEFINE_ERROR_RESULT(CheatInvalidRegister, 6507);
 
         R_DEFINE_ABSTRACT_ERROR_RANGE(FrozenAddressError, 6600, 6699);
             R_DEFINE_ERROR_RESULT(FrozenAddressInvalidWidth,  6600);

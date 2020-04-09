@@ -40,6 +40,8 @@ namespace ams::dmnt::cheat::impl {
     Result ToggleCheat(u32 cheat_id);
     Result AddCheat(u32 *out_id, const CheatDefinition &def, bool enabled);
     Result RemoveCheat(u32 cheat_id);
+    Result ReadArgumentRegister(u64 *out_value, u8 argument_register);
+    Result WriteArgumentRegister(u64 value, u8 argument_register);
 
     Result GetFrozenAddressCount(u64 *out_count);
     Result GetFrozenAddresses(FrozenAddressEntry *frz_addrs, size_t max_count, u64 *out_count, u64 offset);

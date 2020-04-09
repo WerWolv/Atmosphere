@@ -237,6 +237,17 @@ namespace ams::dmnt::cheat::impl {
                     this->LogToDebugFile("Act[%02x]:   %d\n", i, opcode->save_restore_regmask.should_operate[i]);
                 }
                 break;
+
+            case CheatVmOpcodeType_LoadArgumentToRegister:
+                this->LogToDebugFile("Opcode: Load Argument to Register\n");
+                this->LogToDebugFile("A Reg Idx:   %x\n", opcode->arg_reg.arg_reg_index);
+                this->LogToDebugFile("R Reg Idx:   %x\n", opcode->arg_reg.reg_index);
+                break;
+            case CheatVmOpcodeType_LoadRegisterToArgument:
+                this->LogToDebugFile("Opcode: Load Register to Argument\n");
+                this->LogToDebugFile("A Reg Idx:   %x\n", opcode->arg_reg.arg_reg_index);
+                this->LogToDebugFile("R Reg Idx:   %x\n", opcode->arg_reg.reg_index);
+                break;
             case CheatVmOpcodeType_DebugLog:
                 this->LogToDebugFile("Opcode: Debug Log\n");
                 this->LogToDebugFile("Bit Width: %x\n", opcode->debug_log.bit_width);
@@ -568,6 +579,26 @@ namespace ams::dmnt::cheat::impl {
                     for (size_t i = 0; i < NumRegisters; i++) {
                         opcode.save_restore_regmask.should_operate[i] = (first_dword & (1u << i)) != 0;
                     }
+                }
+                break;
+            case CheatVmOpcodeType_LoadArgumentToRegister:
+                {
+                    /* C3aar0000 */
+                    /* C3 = opcode 0xC3 */
+                    /* a = argument register */
+                    /* r = register */
+                    opcode.arg_reg.arg_reg_index = (first_dword >> 16) & 0xFF;
+                    opcode.arg_reg.arg_reg_index = (first_dword >> 12) & 0xF;
+                }
+                break;
+            case CheatVmOpcodeType_LoadRegisterToArgument:
+                {
+                    /* C4aar0000 */
+                    /* C3 = opcode 0xC3 */
+                    /* a = argument register */
+                    /* r = register */
+                    opcode.arg_reg.arg_reg_index = (first_dword >> 16) & 0xFF;
+                    opcode.arg_reg.arg_reg_index = (first_dword >> 12) & 0xF;
                 }
                 break;
             case CheatVmOpcodeType_DebugLog:
@@ -1225,11 +1256,35 @@ namespace ams::dmnt::cheat::impl {
                         this->DebugLog(cur_opcode.debug_log.log_id, log_value);
                     }
                     break;
+                case CheatVmOpcodeType_LoadArgumentToRegister:
+                    {
+                        this->registers[cur_opcode.arg_reg.reg_index] = this->arg_registers[cur_opcode.arg_reg.arg_reg_index];
+                    }
+                    break;
+                case CheatVmOpcodeType_LoadRegisterToArgument:
+                    {
+                        this->arg_registers[cur_opcode.arg_reg.arg_reg_index] = this->registers[cur_opcode.arg_reg.reg_index];
+                    }
+                    break;
                 default:
                     /* By default, we do a no-op. */
                     break;
             }
         }
+    }
+
+    u64 CheatVirtualMachine::getArgumentRegisterValue(u8 reg) {
+        if (reg < 0 || reg >= CheatVirtualMachine::NumArgRegisters)
+            return 0;
+
+        return this->arg_registers[reg];
+    }
+
+    void CheatVirtualMachine::setArgumentRegisterValue(u8 reg, u64 value) {
+        if (reg < 0 || reg >= CheatVirtualMachine::NumArgRegisters)
+            return;
+
+        this->arg_registers[reg] = value;    
     }
 
 }

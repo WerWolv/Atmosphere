@@ -436,6 +436,28 @@ namespace ams::dmnt::cheat::impl {
                     return ResultSuccess();
                 }
 
+                Result ReadArgumentRegister(u64 *out_value, u8 argument_register) {
+                    std::scoped_lock lk(this->cheat_lock);
+
+                    R_TRY(this->EnsureCheatProcess());
+                    R_UNLESS(argument_register < CheatVirtualMachine::NumRegisters, ResultCheatInvalidRegister());
+
+                    *out_value = this->cheat_vm.getArgumentRegisterValue(argument_register);
+
+                    return ResultSuccess();
+                }
+
+                Result WriteArgumentRegister(u64 value, u8 argument_register) {
+                    std::scoped_lock lk(this->cheat_lock);
+
+                    R_TRY(this->EnsureCheatProcess());
+                    R_UNLESS(argument_register < CheatVirtualMachine::NumRegisters, ResultCheatInvalidRegister());
+
+                    this->cheat_vm.setArgumentRegisterValue(argument_register, value);
+
+                    return ResultSuccess();
+                }
+
                 Result GetFrozenAddressCount(u64 *out_count) {
                     std::scoped_lock lk(this->cheat_lock);
 
@@ -1063,6 +1085,14 @@ namespace ams::dmnt::cheat::impl {
 
     Result RemoveCheat(u32 cheat_id) {
         return GetReference(g_cheat_process_manager).RemoveCheat(cheat_id);
+    }
+
+    Result ReadArgumentRegister(u64 *out_value, u8 argument_register) {
+        return GetReference(g_cheat_process_manager).ReadArgumentRegister(out_value, argument_register);
+    }
+
+    Result WriteArgumentRegister(u64 value, u8 argument_register) {
+        return GetReference(g_cheat_process_manager).WriteArgumentRegister(value, argument_register);
     }
 
     Result GetFrozenAddressCount(u64 *out_count) {
